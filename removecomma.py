@@ -1,4 +1,4 @@
-csv_file_path = 'steam_spy_data.csv'
+csv_file_path = 'dataset/steam_spy_data.csv'
 
 # Read the CSV file as text
 with open(csv_file_path, 'r') as file:

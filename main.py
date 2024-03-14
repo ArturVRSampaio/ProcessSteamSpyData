@@ -11,7 +11,7 @@ import numpy as np
 from sklearn.metrics import confusion_matrix, classification_report, precision_score, recall_score, f1_score, roc_auc_score, cohen_kappa_score, matthews_corrcoef
 
 
-data = pd.read_csv("steam_spy_data.csv")
+data = pd.read_csv("dataset/steam_spy_data.csv")
 
 columns_to_drop = ["id", "appid", "name", "developer", "publisher", "created_at", "userscore", "genre", "tags",
                    "languages", "price", "discount", "ccu", "average_forever", "average_2weeks",
@@ -65,23 +65,23 @@ value_to_class = {
     100000000: 0,
     200000000: 0,
     500000000: 0,
-    50000000: 1,
-    20000000: 1,
-    10000000: 1,
-    5000000: 2,
-    2000000: 2,
-    1000000: 2,
-    500000: 3,
-    200000: 3,
-    100000: 3,
-    20000: 4,
-    50000: 4
+    50000000: 0,
+    20000000: 0,
+    10000000: 0,
+    5000000: 0,
+    2000000: 0,
+    1000000: 0,
+    500000: 0,
+    200000: 0,
+    100000: 1,
+    20000: 1,
+    50000: 1
 }
 data['owners'] = data['owners'].map(value_to_class)
 
-data.to_csv('output.csv', index=False)
+data.to_csv('dataset/output.csv', index=False)
 
-data = pd.read_csv("output.csv")
+data = pd.read_csv("dataset/output.csv")
 
 
 
@@ -93,7 +93,7 @@ print("start training")
 
 X_train, X_test, y_train, y_test = train_test_split(data, owners_column, test_size=0.2, random_state=42)
 
-model = XGBRegressor(objective='multi:softmax', num_class=5)
+model = XGBRegressor(objective='multi:softmax', num_class=2)
 model.fit(X_train, y_train, eval_set=[(X_train, y_train), (X_test, y_test)])
 y_pred = model.predict(X_test)
 
@@ -114,7 +114,7 @@ sns.scatterplot(x=y_test, y=rounded_and_clipped_predictions)
 plt.xlabel('True Values')
 plt.ylabel('Predicted Values (Clipped)')
 plt.title('True Values vs Predicted Values (Clipped)')
-plt.savefig('scatter_plot.png')
+plt.savefig('out/scatter_plot.png')
 
 residuals = y_test - rounded_and_clipped_predictions
 plt.figure(figsize=(8, 8))
@@ -123,19 +123,19 @@ plt.axhline(y=0, color='r', linestyle='--')
 plt.xlabel('True Values')
 plt.ylabel('Residuals')
 plt.title('Residual Plot')
-plt.savefig('Residual_Plot.png')
+plt.savefig('out/Residual_Plot.png')
 
 plt.figure(figsize=(8, 8))
 sns.histplot(residuals, kde=True)
 plt.xlabel('Residuals')
 plt.ylabel('Frequency')
 plt.title('Distribution of Residuals')
-plt.savefig('Distribution_of_Residuals.png')
+plt.savefig('out/Distribution_of_Residuals.png')
 
 plt.figure(figsize=(12, 8))
 plot_importance(model, max_num_features=20)
 plt.tight_layout()
-plt.savefig('importance.png')
+plt.savefig('out/importance.png')
 
 
 
