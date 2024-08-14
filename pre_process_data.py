@@ -45,6 +45,7 @@ normalized_tag_columns = normalized_tag_columns.round(2)
 data.update(normalized_tag_columns)
 
 data['user_score'] = ((data['positive']) / (data['positive'] + data['negative'])) * 100
+data['owners'] = data['owners'].apply(lambda x: max(map(int, x.replace(',', '').split('..'))))
 
 data = data.drop(columns=columns_to_drop)
 data = data.fillna(0)
