@@ -24,6 +24,7 @@ def save_graphics(name,
         os.makedirs('out/initial/' + name)
 
     plt.figure(figsize=(10, 5))
+    plt.ticklabel_format(style='plain', axis='x')
     plt.hist(coluna, bins=14, edgecolor='k', alpha=0.7)
     plt.title('Histograma')
     plt.xlabel('Valores')
@@ -35,6 +36,7 @@ def save_graphics(name,
     plt.savefig('out/initial/' + name + '/histograma.png')
 
     plt.figure(figsize=(10, 5))
+    plt.ticklabel_format(style='plain', axis='x')
     plt.boxplot(coluna, vert=False)
     plt.title('Boxplot')
     plt.xlabel('Valores')
@@ -56,7 +58,6 @@ def save_graphics(name,
     plt.savefig('out/initial/' + name + '/contagem_valores.png')
 
     estatisticas = {
-        'Total de Linhas': total_rows,
         'Média': media,
         'Mediana': mediana,
         'Percentil 25': percentil_25,
@@ -76,9 +77,13 @@ def save_graphics(name,
     plt.ylabel('Valor')
     plt.grid(True, linestyle='--', linewidth=0.5)
     plt.tight_layout()
+    plt.subplots_adjust(bottom=0.15)
+
     for bar in bars:
         height = bar.get_height()
         plt.text(bar.get_x() + bar.get_width() / 2, height, f'{height:.2f}', ha='center', va='bottom')
+
+    plt.figtext(0.2, 0.9, f'Total de Linhas: {total_rows}', ha='center', fontsize=10)
 
     plt.savefig('out/initial/' + name + '/resumo_estatistico.png')
 
@@ -94,6 +99,7 @@ def save_graphics(name,
     plt.axvline(media + np.sqrt(variancia), color='gray', linestyle='--')
 
     plt.title('Distribuição dos Valores com Estatísticas')
+    plt.ticklabel_format(style='plain', axis='x')
     plt.xlabel('Valores')
     plt.ylabel('Estatísticas')
     plt.yticks([1, 2, 3, 4, 5], ['Média', 'Mediana', 'Percentil 25', 'Percentil 50', 'Percentil 75'])
@@ -150,8 +156,8 @@ owners_to_class = {
     500000: 0,
     200000: 0,
     100000: 0,
-    20000: 1,
-    50000: 1
+    50000: 1,
+    20000: 1
 }
 
 data['owners_class'] = data['owners'].map(owners_to_class)
@@ -202,7 +208,7 @@ save_graphics('balanced_owner', coluna, total_rows, contagem_valores, media, med
 coluna = data['user_score']
 
 total_rows = len(coluna)
-contagem_valores = data['owners'].value_counts()
+contagem_valores = data['user_score'].value_counts()
 media = np.mean(coluna)
 mediana = np.median(coluna)
 percentil_25 = np.percentile(coluna, 25)
@@ -231,7 +237,7 @@ save_graphics('default_user_score', coluna, total_rows, contagem_valores, media,
 coluna = data_balanced['user_score']
 
 total_rows = len(coluna)
-contagem_valores = data_balanced['owners'].value_counts()
+contagem_valores = data_balanced['user_score'].value_counts()
 media = np.mean(coluna)
 mediana = np.median(coluna)
 percentil_25 = np.percentile(coluna, 25)
